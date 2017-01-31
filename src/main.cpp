@@ -7,13 +7,13 @@
 
 #include <Arduino.h>
 
-const int MD1 = 6;
+const int ND1 = 6;
 const int KSL = 5;
 const int DOB = 4;
 const int CCP = 3; // Has to be 1 or 2
 const int HOK = 2;
 const int BUTTON = 8;
-const int LED = 9;
+const int LED = LED_BUILTIN;
 
 const uint8_t* PING_RESPONSE = new uint8_t[2] {0xc3, 0x03};
 const uint8_t* START_RESPONSE = new uint8_t[2] {0xc1, 0x01};
@@ -31,51 +31,26 @@ volatile int row = 0;
 volatile int state = STATE_START;
 volatile int patternStart = 0;
 int currentNeedle = 0;
-int* cams = new int[2];
-bool wasBetweenCams = true;
+bool wasBetweenCams = false;
+bool wasCcp;
+bool seenNeedle1 = false;
+bool camsChanged = false;
 
-void updatePosition() {
-	bool goingRight = digitalRead(HOK) == LOW;
-	bool insideCams = digitalRead(KSL) == HIGH;
-	bool needle1 = digitalRead(MD1) == LOW;
+
+void log() {
+	String text = String("currurent needle: ") + currentNeedle + " inside: " + wasBetweenCams + " row: "
+			+ row;
+	Serial.println(text);
+}
+
+void updatePosition(bool goingRight) {
 	int direction = (goingRight ? 1 : -1);
-
-	// Left cams
-	if (!insideCams && wasBetweenCams) {
-		switch (state) {
-		case STATE_KNIT:
-			row++;
-			state = STATE_REQUEST_ROW;
-			break;
-		case STATE_START:
-		case STATE_LAST:
-			break;
-		case STATE_REQUEST_ROW:
-		case STATE_ROW_REQUESTED:
-			// BAD
-			break;
-		}
-		cams[goingRight] = currentNeedle;
-	}
 	currentNeedle += direction;
-
-	// entered cams
-	if (!wasBetweenCams && insideCams)
-	{
-		currentNeedle = cams[!goingRight];
-	}
-
-	if (needle1) {
-		cams[0] -= currentNeedle;
-		cams[1] -= currentNeedle;
-	}
-	wasBetweenCams = insideCams;
 }
 
 void updateNeedle()
 {
-	if (!wasBetweenCams || row < 0)
-	{
+	if (state != STATE_KNIT && state != STATE_LAST) {
 		digitalWrite(DOB, LOW);
 		return;
 	}
@@ -85,15 +60,39 @@ void updateNeedle()
 	digitalWrite(DOB, isHigh);
 }
 
-void onNeedle()
+void onCams(bool goingRight)
 {
-	updatePosition();
-	updateNeedle();
+	// Left cams
+	if (wasBetweenCams) {
+		switch (state) {
+		case STATE_KNIT:
+			row++;
+			state = STATE_REQUEST_ROW;
+			break;
+		case STATE_LAST:
+			state = STATE_START;
+			seenNeedle1 = false;
+			break;
+		case STATE_START:
+			break;
+		case STATE_REQUEST_ROW:
+		case STATE_ROW_REQUESTED:
+			// BAD
+			break;
+		}
+		currentNeedle += (goingRight ? 1 : -1);
+	}
+}
+
+void onNeedle1()
+{
+	currentNeedle = 0;
+	seenNeedle1 = true;
 }
 
 void setup()
 {
-	  pinMode(MD1, INPUT);
+	  pinMode(ND1, INPUT);
 	  pinMode(KSL, INPUT);
 	  pinMode(DOB, OUTPUT);
 	  pinMode(CCP, INPUT);
@@ -102,8 +101,7 @@ void setup()
 	  pinMode(LED, OUTPUT);
 
 	  digitalWrite(DOB, LOW);
-	  attachInterrupt(digitalPinToInterrupt(CCP), onNeedle, RISING);
-	  Serial.begin(9600);
+	  Serial.begin(115200);
 }
 
 
@@ -157,19 +155,44 @@ void getRow()
 	state = STATE_ROW_REQUESTED;
 }
 
+void processMove()
+{
+	bool goingRight = digitalRead(HOK) == LOW;
+	bool insideCams = digitalRead(KSL) == HIGH;
+	bool needle1 = digitalRead(ND1) == LOW;
+	bool ccp = digitalRead(CCP) == HIGH;
+	if (ccp == wasCcp) {
+		return;
+	}
+	wasCcp = ccp;
+	if (ccp == LOW) {
+		return;
+	}
+	if (wasBetweenCams != insideCams) {
+		onCams(goingRight);
+		wasBetweenCams = insideCams;
+	}
+	if (insideCams) {
+		updatePosition(goingRight);
+		if (needle1 && wasBetweenCams && !seenNeedle1 && goingRight) {
+			onNeedle1();
+			seenNeedle1 = true;
+		}
+		updateNeedle();
+	} else {
+		digitalWrite(DOB, LOW);
+	}
+}
+
 void loop()
 {
 	if (digitalRead(BUTTON) == LOW) {
-		String text = String("currurent needle: ") + currentNeedle
-				+ " cams: " + cams[0] + ":" + cams[1]
-				+ " inside: " + wasBetweenCams
-				+ " row: " + row;
-		Serial.println(text);
+		log();
 	}
 	if (state == STATE_REQUEST_ROW) {
 		getRow();
 	}
 	communicate();
 	digitalWrite(LED, state == STATE_REQUEST_ROW || state == STATE_ROW_REQUESTED);
-	delay(100);
+	processMove();
 }
