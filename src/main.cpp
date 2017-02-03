@@ -12,7 +12,6 @@ const int KSL = 5;
 const int DOB = 4;
 const int CCP = 3; // Has to be 1 or 2
 const int HOK = 2;
-const int BUTTON = 8;
 const int LED = LED_BUILTIN;
 
 const uint8_t* PING_RESPONSE = new uint8_t[2] {0xc3, 0x03};
@@ -92,7 +91,6 @@ void setup()
 	  pinMode(DOB, OUTPUT);
 	  pinMode(CCP, INPUT);
 	  pinMode(HOK, INPUT);
-	  pinMode(BUTTON, INPUT_PULLUP);
 	  pinMode(LED, OUTPUT);
 
 	  digitalWrite(DOB, LOW);
@@ -182,11 +180,6 @@ void processMove()
 
 void loop()
 {
-	if (digitalRead(BUTTON) == LOW) {
-		state = STATE_REQUEST_ROW;
-		row++;
-		delay(1000);
-	}
 	if (state == STATE_REQUEST_ROW) {
 		getRow();
 	}
