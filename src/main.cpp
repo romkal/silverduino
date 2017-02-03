@@ -33,6 +33,7 @@ int currentNeedle = 0;
 bool wasBetweenCams = false;
 bool wasCcp;
 bool seenNeedle1 = false;
+unsigned long rowRequestedMillis = 0;
 
 void updatePosition(bool goingRight) {
 	int direction = (goingRight ? 1 : -1);
@@ -105,8 +106,10 @@ void pingCommand()
 
 void startCommand()
 {
-	patternStart = Serial.read();
-	patternSize = Serial.read() - patternStart + 1;
+	uint8_t* startEnd = new uint8_t[2];
+	Serial.readBytes(startEnd, 2);
+	patternStart = startEnd[0];
+	patternSize = startEnd[1] - patternStart + 1;
 	Serial.write(START_RESPONSE, 2);
 	row = 0;
 	state = STATE_REQUEST_ROW;
@@ -114,11 +117,13 @@ void startCommand()
 
 void rowCommand()
 {
-	Serial.read(); // rowNumber
+	uint8_t trash;
+	Serial.readBytes(&trash, 1); // rowNumber - ignore
 	Serial.readBytes(patternBuffer, MAX / 8);
-	int flags = Serial.read();
+	uint8_t flags;
+	Serial.readBytes(&flags, 1);
 	state = flags ? STATE_LAST : STATE_KNIT;
-	Serial.read(); //crc
+	Serial.readBytes(&trash, 1); //crc - ignore
 }
 
 void communicate()
@@ -147,6 +152,7 @@ void getRow()
 	Serial.write(0x82);
 	Serial.write(row);
 	state = STATE_ROW_REQUESTED;
+	rowRequestedMillis = millis();
 }
 
 void processMove()
@@ -180,7 +186,7 @@ void processMove()
 
 void loop()
 {
-	if (state == STATE_REQUEST_ROW) {
+	if (state == STATE_REQUEST_ROW || (state == STATE_ROW_REQUESTED && millis() > rowRequestedMillis + 2000)) {
 		getRow();
 	}
 	communicate();
