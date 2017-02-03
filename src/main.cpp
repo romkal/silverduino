@@ -26,38 +26,33 @@ const int STATE_KNIT = 4;
 const int STATE_LAST = 5;
 
 uint8_t* patternBuffer = new uint8_t[MAX / 8];
-volatile int patternSize;
-volatile int row = 0;
-volatile int state = STATE_START;
-volatile int patternStart = 0;
+int patternSize;
+int row = 0;
+int state = STATE_START;
+int patternStart = 0;
 int currentNeedle = 0;
 bool wasBetweenCams = false;
 bool wasCcp;
 bool seenNeedle1 = false;
-bool camsChanged = false;
-
-
-void log() {
-	String text = String("currurent needle: ") + currentNeedle + " inside: " + wasBetweenCams + " row: "
-			+ row;
-	Serial.println(text);
-}
 
 void updatePosition(bool goingRight) {
 	int direction = (goingRight ? 1 : -1);
 	currentNeedle += direction;
 }
 
-void updateNeedle()
+bool patternNeedle()
 {
-	if (state != STATE_KNIT && state != STATE_LAST) {
-		digitalWrite(DOB, LOW);
-		return;
+	if ((state != STATE_KNIT && state != STATE_LAST)) {
+		return false;
 	}
-	int patternBitNr = (currentNeedle + patternStart) % patternSize;
+	int patternBitNr = (currentNeedle % patternSize);
+	if (patternBitNr < 0)
+	{
+		patternBitNr += patternSize;
+	}
+	patternBitNr += patternStart;
 	uint8_t patternByte = patternBuffer[patternBitNr / 8];
-	bool isHigh = patternByte & 1 << (patternBitNr % 8);
-	digitalWrite(DOB, isHigh);
+	return patternByte & 1 << (patternBitNr % 8);
 }
 
 void onCams(bool goingRight)
@@ -113,9 +108,9 @@ void pingCommand()
 void startCommand()
 {
 	patternStart = Serial.read();
-	patternSize = Serial.read() - patternStart;
+	patternSize = Serial.read() - patternStart + 1;
 	Serial.write(START_RESPONSE, 2);
-	row = 1;
+	row = 0;
 	state = STATE_REQUEST_ROW;
 }
 
@@ -125,6 +120,7 @@ void rowCommand()
 	Serial.readBytes(patternBuffer, MAX / 8);
 	int flags = Serial.read();
 	state = flags ? STATE_LAST : STATE_KNIT;
+	Serial.read(); //crc
 }
 
 void communicate()
@@ -178,7 +174,7 @@ void processMove()
 			onNeedle1();
 			seenNeedle1 = true;
 		}
-		updateNeedle();
+		digitalWrite(DOB, patternNeedle());
 	} else {
 		digitalWrite(DOB, LOW);
 	}
@@ -187,7 +183,9 @@ void processMove()
 void loop()
 {
 	if (digitalRead(BUTTON) == LOW) {
-		log();
+		state = STATE_REQUEST_ROW;
+		row++;
+		delay(1000);
 	}
 	if (state == STATE_REQUEST_ROW) {
 		getRow();
