@@ -34,6 +34,7 @@ bool wasBetweenCams = false;
 bool wasCcp;
 bool seenNeedle1 = false;
 unsigned long rowRequestedMillis = 0;
+unsigned long lastNeedleSeen = 0;
 
 void updatePosition(bool goingRight) {
 	int direction = (goingRight ? 1 : -1);
@@ -67,6 +68,7 @@ void onCams(bool goingRight)
 		case STATE_LAST:
 			state = STATE_START;
 			seenNeedle1 = false;
+			digitalWrite(DOB, HIGH);
 			break;
 		case STATE_START:
 			break;
@@ -161,6 +163,10 @@ void processMove()
 	bool insideCams = digitalRead(KSL) == HIGH;
 	bool needle1 = digitalRead(ND1) == LOW;
 	bool ccp = digitalRead(CCP) == HIGH;
+	if (millis() > (lastNeedleSeen + 1000))
+	{
+		digitalWrite(DOB, LOW); // Prevent smoking...
+	}
 	if (ccp == wasCcp) {
 		return;
 	}
@@ -180,8 +186,9 @@ void processMove()
 		}
 		digitalWrite(DOB, patternNeedle());
 	} else {
-		digitalWrite(DOB, LOW);
+		digitalWrite(DOB, HIGH);
 	}
+	lastNeedleSeen = millis();
 }
 
 void loop()
