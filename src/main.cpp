@@ -23,7 +23,6 @@ Carriage carriage;
 Pattern* pattern = new BuiltInPattern(ROMAN, 8, 1);
 PatternProgression patternProgression(pattern);
 Ayab ayab;
-Ui ui;
 int wasInsideCams;
 
 void setup()

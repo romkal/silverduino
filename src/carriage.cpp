@@ -59,3 +59,8 @@ row_t BuiltInPattern::getRow(uint16_t rowNr) const {
 	memcpy_P(result.data, ROMAN, 1);
 	return result;
 }
+
+void Pattern::draw(U8G2& display)
+{
+	display.print(F("Preview not available.."));
+}

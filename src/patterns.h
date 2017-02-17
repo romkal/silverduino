@@ -5,9 +5,9 @@
  *      Author: romkal
  */
 
-#include <Arduino.h>
 #ifndef SRC_PATTERNS_H_
 #define SRC_PATTERNS_H_
+#include <Arduino.h>
 
 const uint8_t ROMAN[] PROGMEM = {0x55};
 

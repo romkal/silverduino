@@ -4,10 +4,10 @@
  *  Created on: Feb 10, 2017
  *      Author: romkal
  */
-#include <Arduino.h>
-#include "carriage.h"
 #ifndef SRC_AYAB_H_
 #define SRC_AYAB_H_
+#include <Arduino.h>
+#include "carriage.h"
 
 class Ayab {
 private:

@@ -4,10 +4,11 @@
  *  Created on: Feb 9, 2017
  *      Author: romkal
  */
-#include <Arduino.h>
 #ifndef SRC_CARRIAGE_H_
 #define SRC_CARRIAGE_H_
 
+#include <Arduino.h>
+#include <U8g2lib.h>
 #define ND1 6
 #define KSL 5
 #define DOB 4
@@ -27,6 +28,7 @@ typedef struct {
 class Pattern
 {
 public:
+	virtual void draw(U8G2& display);
 	virtual row_t getRow(uint16_t rowNr) const = 0;
 	virtual ~Pattern() {}
 };
@@ -34,9 +36,9 @@ public:
 class BuiltInPattern: public Pattern
 {
 private:
-	const uint8_t* pattern;
 	uint8_t width;
 	uint16_t height;
+	const uint8_t* pattern;
 public:
 	BuiltInPattern(const uint8_t* pattern, uint8_t width, uint16_t height):
 		Pattern(), pattern(pattern), width(width), height(height) {}
@@ -51,6 +53,11 @@ private:
 	const Pattern* pattern;
 	row_t current_row;
 public:
+	uint8_t scale_x = 1;
+	uint8_t scale_y = 1;
+	bool invert = false;
+	bool mirror = false;
+	uint8_t repeat = 1;
 	PatternProgression(const Pattern* pattern): pattern(pattern) {}
 	bool endLine();
 	bool needleState(int16_t needleNr) const;
