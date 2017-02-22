@@ -33,17 +33,23 @@ public:
 	virtual ~Pattern() {}
 };
 
+struct pattern_t {
+		const uint8_t width;
+		const uint16_t height;
+		const uint8_t* pattern;
+		pattern_t(uint8_t width, uint16_t height, const uint8_t* pattern):
+			width(width), height(height), pattern(pattern) {}
+};
+
 class BuiltInPattern: public Pattern
 {
-private:
-	uint8_t width;
-	uint16_t height;
-	const uint8_t* pattern;
 public:
-	BuiltInPattern(const uint8_t* pattern, uint8_t width, uint16_t height):
-		Pattern(), pattern(pattern), width(width), height(height) {}
+
+	BuiltInPattern(pattern_t*);
 	~BuiltInPattern() {};
 	row_t getRow(uint16_t rowNr) const;
+private:
+	pattern_t pattern;
 };
 
 class PatternProgression

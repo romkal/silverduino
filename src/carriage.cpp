@@ -51,12 +51,20 @@ bool PatternProgression::needleState(int16_t needleNr) const
 	return bitRead(byte, needleNr % 8);
 }
 
+BuiltInPattern::BuiltInPattern(pattern_t* patternMem):Pattern(),
+	pattern(pgm_read_byte(&(patternMem->height)),
+		pgm_read_byte(&(patternMem->width)),
+		patternMem->pattern)
+{
+}
+
 row_t BuiltInPattern::getRow(uint16_t rowNr) const {
 	row_t result;
-	result.size = 8;
-	result.flags = 1;
-	result.data = new uint8_t[8 / 8];
-	memcpy_P(result.data, ROMAN, 1);
+	result.size = pattern.width;
+	result.flags = (rowNr == pattern.height - 1);
+	uint8_t rowBytes = pattern.width / 8 + (pattern.width % 8 != 0);
+	result.data = new uint8_t[rowBytes];
+	memcpy_P(result.data, pattern.pattern, rowBytes);
 	return result;
 }
 

@@ -27,21 +27,13 @@
 									<listOptionValue builtIn="false" value="${HOME}/.platformio/packages/framework-arduinoavr/variants/standard"/>
 									<listOptionValue builtIn="false" value="${HOME}/.platformio/packages/framework-arduinoavr/libraries/SPI/src"/>
 									<listOptionValue builtIn="false" value="${HOME}/.platformio/packages/framework-arduinoavr/libraries/Wire/src"/>
-									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/Streaming_ID560"/>
 									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/U8g2_ID942/src"/>
-									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/PCINT r-site.net/src"/>
-									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/ArduinoMenu library_ID1468/src"/>
 									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/src"/>
-									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/ArduinoMenu library_ID1468/src"/>
-									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/Streaming_ID560"/>
-									<listOptionValue builtIn="false" value="${HOME}/.platformio/packages/framework-arduinoavr/libraries/SPI/src"/>
-									<listOptionValue builtIn="false" value="${HOME}/.platformio/packages/framework-arduinoavr/libraries/Wire/src"/>
-									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/U8g2_ID942/src"/>
-									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/PCINT r-site.net/src"/>
+									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/Adafruit GFX Library_ID13"/>
+									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/Adafruit SSD1306_ID135"/>
 									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/ArduinoMenu library_ID1468/src"/>
 									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/PCINT r-site.net/src"/>
 									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/Sodaq_PcInt_ID695/src"/>
-									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/Streaming_ID560"/>
 									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/Streaming_ID560"/>
 									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/U8g2_ID942/src"/>
 									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/Yet Another Arduino PcInt Library_ID795/src"/>
@@ -92,21 +84,13 @@
 									<listOptionValue builtIn="false" value="${HOME}/.platformio/packages/framework-arduinoavr/variants/standard"/>
 									<listOptionValue builtIn="false" value="${HOME}/.platformio/packages/framework-arduinoavr/libraries/SPI/src"/>
 									<listOptionValue builtIn="false" value="${HOME}/.platformio/packages/framework-arduinoavr/libraries/Wire/src"/>
-									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/Streaming_ID560"/>
 									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/U8g2_ID942/src"/>
-									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/PCINT r-site.net/src"/>
-									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/ArduinoMenu library_ID1468/src"/>
 									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/src"/>
-									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/ArduinoMenu library_ID1468/src"/>
-									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/Streaming_ID560"/>
-									<listOptionValue builtIn="false" value="${HOME}/.platformio/packages/framework-arduinoavr/libraries/SPI/src"/>
-									<listOptionValue builtIn="false" value="${HOME}/.platformio/packages/framework-arduinoavr/libraries/Wire/src"/>
-									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/U8g2_ID942/src"/>
-									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/PCINT r-site.net/src"/>
+									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/Adafruit GFX Library_ID13"/>
+									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/Adafruit SSD1306_ID135"/>
 									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/ArduinoMenu library_ID1468/src"/>
 									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/PCINT r-site.net/src"/>
 									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/Sodaq_PcInt_ID695/src"/>
-									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/Streaming_ID560"/>
 									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/Streaming_ID560"/>
 									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/U8g2_ID942/src"/>
 									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/Yet Another Arduino PcInt Library_ID795/src"/>
@@ -157,21 +141,13 @@
 									<listOptionValue builtIn="false" value="${HOME}/.platformio/packages/framework-arduinoavr/variants/standard"/>
 									<listOptionValue builtIn="false" value="${HOME}/.platformio/packages/framework-arduinoavr/libraries/SPI/src"/>
 									<listOptionValue builtIn="false" value="${HOME}/.platformio/packages/framework-arduinoavr/libraries/Wire/src"/>
-									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/Streaming_ID560"/>
 									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/U8g2_ID942/src"/>
-									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/PCINT r-site.net/src"/>
-									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/ArduinoMenu library_ID1468/src"/>
 									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/src"/>
-									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/ArduinoMenu library_ID1468/src"/>
-									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/Streaming_ID560"/>
-									<listOptionValue builtIn="false" value="${HOME}/.platformio/packages/framework-arduinoavr/libraries/SPI/src"/>
-									<listOptionValue builtIn="false" value="${HOME}/.platformio/packages/framework-arduinoavr/libraries/Wire/src"/>
-									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/U8g2_ID942/src"/>
-									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/PCINT r-site.net/src"/>
+									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/Adafruit GFX Library_ID13"/>
+									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/Adafruit SSD1306_ID135"/>
 									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/ArduinoMenu library_ID1468/src"/>
 									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/PCINT r-site.net/src"/>
 									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/Sodaq_PcInt_ID695/src"/>
-									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/Streaming_ID560"/>
 									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/Streaming_ID560"/>
 									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/U8g2_ID942/src"/>
 									<listOptionValue builtIn="false" value="${HOME}/git/silverduino/.piolibdeps/Yet Another Arduino PcInt Library_ID795/src"/>

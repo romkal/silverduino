@@ -4,66 +4,98 @@
  *  Created on: Feb 17, 2017
  *      Author: romkal
  */
-#include <menu.h>
-#include <menuIO/u8g2Out.h>
-#include <menuIO/serialOut.h>
-#include <menuIO/chainStream.h>
-#include <menuIO/encoderIn.h>
-#include <menuIO/keyIn.h>
+#include <Arduino.h>
 #include "carriage.h"
-using namespace Menu;
+#include <U8g2lib.h>
+#include "ui.h"
 
-U8G2_SSD1309_128X64_NONAME_1_2ND_HW_I2C u8g2(&u8g2_cb_r0);
+#define MAX_TITLE 30
+#define SCREEN_WIDTH 128
 
-result showPattern(menuOut& o,idleEvent e)
+#define LEFT_PIN 11
+#define ENTER_PIN 12
+#define RIGHT_PIN 13
+
+U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0);
+
+void Ui::begin()
 {
-	pattern->draw(u8g2);
-	return result::quit;
+	pinMode(LEFT_PIN, INPUT_PULLUP);
+	pinMode(ENTER_PIN, INPUT_PULLUP);
+	pinMode(RIGHT_PIN, INPUT_PULLUP);
+
+	// u8g2_SetI2CAddress(u8g2.getU8g2(), 0x3c * 2);
+	u8g2.begin();
 }
 
-result changePattern(menuOut& o,idleEvent e)
+void Ui::eventLoop()
 {
-	return result::quit;
+	const int PINS[] = {LEFT_PIN, ENTER_PIN, RIGHT_PIN};
+	int pressed = -1;
+	for (int i = 0; i < 3; i++) {
+		if (digitalRead(PINS[i]) == LOW) {
+			pressed = PINS[i];
+		}
+	}
+	if (previousKey == pressed) {
+		return;
+	}
+	previousKey = pressed;
+	int change;
+	switch (pressed) {
+	case LEFT_PIN:
+	case RIGHT_PIN:
+		change = pressed == LEFT_PIN ? -1 : 1;
+		if (inMenu) {
+			screens[screenIdx]->onChange(change);
+		} else {
+			screenIdx = (screenIdx + change + screensLen) % screensLen;
+		}
+		break;
+	case ENTER_PIN:
+		inMenu = !inMenu;
+		break;
+	default:
+		// nothing
+		break;
+	}
+	u8g2.firstPage();
+	do {
+		screens[screenIdx]->draw(inMenu);
+	} while (u8g2.nextPage());
 }
 
+void Screen::draw(bool inMenu) const
+{
+	u8g2.setFont(u8g2_font_10x20_mr);
+	u8g2_uint_t width = u8g2.getStrWidth(title);
+	u8g2.drawStr((SCREEN_WIDTH - width) / 2, 20, title);
+	this->drawContent();
+}
 
-TOGGLE(patternProgression.invert, invertToogle, "Invert", doNothing,noEvent,wrapStyle,
-		VALUE("Normal", false, doNothing, noEvent),
-		VALUE("Inverted", true, doNothing, noEvent));
+void NumberScreen::drawContent() const
+{
+	u8g2.setFont(u8g2_font_inb24_mn);
+	char number[4];
+	itoa(holder, number, 10);
+	u8g2_uint_t width = u8g2.getStrWidth(number);
+	u8g2.drawStr((SCREEN_WIDTH - width) / 2, (64 - 20) / 2 + 20 + 24 / 2, number);
+}
 
-MENU(root, "Main menu", Menu::doNothing, Menu::noEvent, Menu::wrapStyle,
-		OP("Show pattern", showPattern, Menu::enterEvent),
-		OP("Change pattern", changePattern, Menu::enterEvent),
-		FIELD(patternProgression.scale_x, "Scale X", "x", 1, 5, 1, 1, doNothing, noEvent, wrapStyle),
-		FIELD(patternProgression.scale_y, "Scale Y", "x", 1, 5, 1, 1, doNothing, noEvent, wrapStyle),
-		FIELD(patternProgression.repeat, "Repeat", "x", 1, 50, 5, 1, doNothing, noEvent, wrapStyle),
-		SUBMENU(invertToogle),
-		EXIT("<Back"));
+void NumberScreen::onChange(int8_t change)
+{
+	holder += change;
+}
 
+void BoolScreen::drawContent() const
+{
+	u8g2.setFont(u8g2_font_10x20_mr);
+	const char* text = holder ? "true" : "false";
+	u8g2_uint_t width = u8g2.getStrWidth(text);
+	u8g2.drawStr((SCREEN_WIDTH - width) / 2, 40, text);
+}
 
-#define fontName u8g2_font_5x7_tf
-#define fontX 5
-#define fontY 8
-#define offsetX 32
-#define offsetY 16
-#define MAX_DEPTH 2
-const colorDef<uint8_t> colors[] MEMMODE={
-  {{0,0},{0,1,1}},//bgColor
-  {{1,1},{1,0,0}},//fgColor
-  {{1,0},{1,0,0}},//valColor
-  {{1,1},{1,0,0}},//unitColor
-  {{0,1},{0,0,1}},//cursorColor
-  {{0,0},{1,1,1}},//titleColor
-};
-encoderIn<1, 2> encoder;
-encoderInStream<1, 2> encoderStream(encoder, 1);
-keyMap encBtn_map[]={{-3,options->getCmdChar(enterCmd)}};//negative pin numbers use internal pull-up, this is on when low
-keyIn<1> encButton(encBtn_map);//1 is the number of keys
-MENU_INPUTS(in,&encoderStream, &encButton);
-
-MENU_OUTPUTS(out,MAX_DEPTH
-  ,U8G2_OUT(u8g2,colors,fontX,fontY,offsetX,offsetY,{0,0,64/fontX,48/fontY})
-  ,NONE//must have 2 items at least
-);
-
-NAVROOT(nav, root, 1, in, out);
+void BoolScreen::onChange(int8_t change)
+{
+	holder = !holder;
+}

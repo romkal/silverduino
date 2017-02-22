@@ -17,12 +17,21 @@
 #define DOB 4 // output
 #define CCP 3 // clock
 #define HOK 2 // direction
-#define LED LED_BUILTIN
 
 Carriage carriage;
-Pattern* pattern = new BuiltInPattern(ROMAN, 8, 1);
+Pattern* pattern = new BuiltInPattern(&ROMAN);
 PatternProgression patternProgression(pattern);
 Ayab ayab;
+
+NumberScreen repeatScreen("Repeat", patternProgression.repeat);
+BoolScreen invertScreen("Invert", patternProgression.invert);
+BoolScreen mirrorScreen("Mirror", patternProgression.mirror);
+const Screen* screens[] {
+		&repeatScreen,
+		&invertScreen,
+		&mirrorScreen
+};
+Ui ui(screens, 2);
 int wasInsideCams;
 
 void setup()
@@ -32,23 +41,30 @@ void setup()
 	  pinMode(DOB, OUTPUT);
 	  pinMode(CCP, INPUT);
 	  pinMode(HOK, INPUT);
-	  pinMode(LED, OUTPUT);
 
+	  while(!Serial);
 	  digitalWrite(DOB, LOW);
 	  Serial.begin(115200);
+	  ui.begin();
 }
 
 void loop()
 {
 	int insideCams = digitalRead(KSL);
-	if (insideCams != wasInsideCams && insideCams == LOW) {
-		digitalWrite(DOB, LOW);
-		patternProgression.endLine();
+	if (insideCams != wasInsideCams) {
+		if (insideCams == LOW) {
+			digitalWrite(DOB, LOW);
+			patternProgression.endLine();
+		} else {
+			// entered cams
+		}
 	}
 	wasInsideCams = insideCams;
-	if (insideCams == HIGH) {
+	if (false) {
+//	if (insideCams == HIGH) {
 		carriage.eventLoop(digitalRead(HOK) == LOW, digitalRead(CCP), digitalRead(ND1) == LOW);
 	} else {
+		ui.eventLoop();
 		ayab.eventLoop();
 	}
 }
