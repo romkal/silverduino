@@ -51,7 +51,7 @@ bool PatternProgression::needleState(int16_t needleNr) const
 	return bitRead(byte, needleNr % 8);
 }
 
-BuiltInPattern::BuiltInPattern(pattern_t* patternMem):Pattern(),
+BuiltInPattern::BuiltInPattern(const pattern_t* patternMem):Pattern(),
 	pattern(pgm_read_byte(&(patternMem->height)),
 		pgm_read_byte(&(patternMem->width)),
 		patternMem->pattern)
@@ -68,7 +68,7 @@ row_t BuiltInPattern::getRow(uint16_t rowNr) const {
 	return result;
 }
 
-void Pattern::draw(U8G2& display)
+void Pattern::draw(U8G2& display) const
 {
 	display.print(F("Preview not available.."));
 }

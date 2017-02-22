@@ -28,7 +28,7 @@ typedef struct {
 class Pattern
 {
 public:
-	virtual void draw(U8G2& display);
+	virtual void draw(U8G2& display) const;
 	virtual row_t getRow(uint16_t rowNr) const = 0;
 	virtual ~Pattern() {}
 };
@@ -45,11 +45,11 @@ class BuiltInPattern: public Pattern
 {
 public:
 
-	BuiltInPattern(pattern_t*);
+	BuiltInPattern(const pattern_t*);
 	~BuiltInPattern() {};
 	row_t getRow(uint16_t rowNr) const;
 private:
-	pattern_t pattern;
+	const pattern_t pattern;
 };
 
 class PatternProgression

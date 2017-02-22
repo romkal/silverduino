@@ -31,7 +31,7 @@ const Screen* screens[] {
 		&invertScreen,
 		&mirrorScreen
 };
-Ui ui(screens, 2);
+Ui ui(screens, 3);
 int wasInsideCams;
 
 void setup()
