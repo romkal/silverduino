@@ -12,26 +12,23 @@
 #include "ui.h"
 #include "patterns.h"
 
-#define ND1 6 // needle1
-#define KSL 5 //  cams
-#define DOB 4 // output
-#define CCP 3 // clock
-#define HOK 2 // direction
-
 Carriage carriage;
-Pattern* pattern = new BuiltInPattern(&ROMAN);
-PatternProgression patternProgression(pattern);
+PatternProgression patternProgression;
 Ayab ayab;
 
+PatternScreen patternScreen("Pattern", PATTERNS, 2, patternProgression);
 NumberScreen repeatScreen("Repeat", patternProgression.repeat);
 BoolScreen invertScreen("Invert", patternProgression.invert);
 BoolScreen mirrorScreen("Mirror", patternProgression.mirror);
-const Screen* screens[] {
+CarriageFunctionScreen resetScreen ("Reset", &PatternProgression::reset);
+Screen* screens[] {
+		&patternScreen,
 		&repeatScreen,
 		&invertScreen,
-		&mirrorScreen
+		&mirrorScreen,
+		&resetScreen
 };
-Ui ui(screens, 3);
+Ui ui(screens, sizeof(screens) / sizeof(Screen*));
 int wasInsideCams;
 
 void setup()
@@ -44,7 +41,7 @@ void setup()
 
 	  while(!Serial);
 	  digitalWrite(DOB, LOW);
-	  Serial.begin(115200);
+	  Serial.begin(9600);
 	  ui.begin();
 }
 

@@ -7,15 +7,6 @@
 #include <Arduino.h>
 #include "Ayab.h"
 
-Ayab::Ayab() {
-	// TODO Auto-generated constructor stub
-
-}
-
-Ayab::~Ayab() {
-	// TODO Auto-generated destructor stub
-}
-
 void Ayab::pingCommand()
 {
 	uint8_t pingResponse[] {0xc3, 0x03};
@@ -36,7 +27,6 @@ void Ayab::rowCommand()
 {
 	uint8_t trash;
 	Serial.readBytes(&trash, 1); // rowNumber - ignore
-	row_t row;
 	uint8_t bytesToRead = min(24, patternSize / 8) + 1;
 	row.size = patternSize;
 	row.data = new uint8_t[bytesToRead];
@@ -46,8 +36,6 @@ void Ayab::rowCommand()
 	}
 	Serial.readBytes(&row.flags, 1);
 	Serial.readBytes(&trash, 1); //crc - ignore
-	rowCallback(row);
-	rowCallback = NULL;
 }
 
 void Ayab::communicate()
@@ -71,15 +59,31 @@ void Ayab::communicate()
 	}
 }
 
-void Ayab::getRow(uint8_t row, void (*callback)(row_t))
+void Ayab::getRow(uint8_t row)
 {
 	Serial.write(0x82);
 	Serial.write(row);
-	rowRequestedMillis = millis();
-	rowCallback = callback;
+	uint8_t trash;
+	Serial.readBytes(&trash, 1);
+	rowCommand();
 }
 
 void Ayab::eventLoop()
 {
 	communicate();
+}
+
+void AyabPattern::draw(U8G2& display) const
+{
+	static const char * ayabStr = "Ayab";
+	u8g2_uint_t x = 64 - display.getStrWidth(ayabStr) / 2;
+	display.drawStr(x, 40, ayabStr);
+}
+
+
+
+row_t AyabPattern::getRow(uint16_t rowNr) const
+{
+	ayab.getRow(rowNr);
+	return ayab.row;
 }
