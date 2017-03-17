@@ -25,7 +25,7 @@ const uint8_t STRIPE_BITMAP[] PROGMEM = {
 const pattern_t ROMAN_PATTERN PROGMEM {49, 9, ROMAN_BITMAP};
 const pattern_t STRIPE_PATTERN PROGMEM {2, 2, STRIPE_BITMAP};
 
-const pattern_t PATTERNS[2] PROGMEM = {
+const pattern_t PATTERNS[] PROGMEM = {
 	ROMAN_PATTERN,
 	STRIPE_PATTERN,
 };
