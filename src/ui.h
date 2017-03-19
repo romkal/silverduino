@@ -55,12 +55,12 @@ public:
 class PatternScreen: public Screen
 {
 private:
-	const pattern_t* patterns;
+	const pattern_t** const patterns;
 	const size_t size;
 	PatternProgression& patternProgression;
 	int index = 0;
 public:
-	PatternScreen(const char* title, const pattern_t* patterns, size_t size, PatternProgression& pattern):
+	PatternScreen(const char* title, const pattern_t** const patterns, size_t size, PatternProgression& pattern):
 		Screen(title), patterns(patterns), size(size), patternProgression(pattern) {};
 	virtual void drawContent() const;
 	virtual bool onChange(int8_t change);

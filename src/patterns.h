@@ -10,5 +10,5 @@
 #include <Arduino.h>
 #include "carriage.h"
 
-extern const pattern_t PATTERNS[];
+extern const pattern_t* const PATTERNS[];
 #endif /* SRC_PATTERNS_H_ */

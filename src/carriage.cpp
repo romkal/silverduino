@@ -10,13 +10,11 @@
 #include "carriage.h"
 #include "patterns.h"
 pattern_t::pattern_t(const pattern_t* patternPtr):
-//		width(pgm_read_byte(&(patternPtr->width))),
-//		height(pgm_read_word(&(patternPtr->height))),
-		width(patternPtr->width),
-		height(patternPtr->height),
+		width(pgm_read_byte(&(patternPtr->width))),
+		height(pgm_read_word(&(patternPtr->height))),
+//		width(patternPtr->width),
+//		height(patternPtr->height),
 		pattern(patternPtr->pattern){
-	Serial.println(String("creating pattern: ") + width + " " + height);
-	Serial.println(String("width: ") + patternPtr->width);
 }
 
 int Carriage::eventLoop(bool goingRight, bool ccp, bool needle1)
@@ -43,7 +41,7 @@ int Carriage::eventLoop(bool goingRight, bool ccp, bool needle1)
 	return patternProgression.needleState(currentNeedle);
 }
 
-PatternProgression::PatternProgression():pattern(new BuiltInPattern(&PATTERNS[0])) {}
+PatternProgression::PatternProgression():pattern(new BuiltInPattern(PATTERNS[0])) {}
 
 bool PatternProgression::endLine()
 {

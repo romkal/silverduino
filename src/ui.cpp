@@ -111,7 +111,7 @@ void PatternScreen::drawContent() const
 bool PatternScreen::onChange(int8_t change)
 {
 	index = (index + size + change) % size;
-	Pattern* newPattern = new BuiltInPattern(&(patterns[index]));
+	Pattern* newPattern = new BuiltInPattern(patterns[index]);
 	patternProgression.setPattern(newPattern);
 	return true;
 }
