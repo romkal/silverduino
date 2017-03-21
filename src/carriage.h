@@ -80,7 +80,7 @@ public:
 	bool mirror = false;
 	uint8_t repeat = 1;
 	void setPattern(Pattern* p) {delete pattern; pattern = p; row = 0; loadRow();}
-	const Pattern& currentPattern() const {return *pattern;}
+	const Pattern* currentPattern() const {return pattern;}
 	bool endLine();
 	bool needleState(int16_t needleNr) const;
 	void reset() {row = 0; loadRow();}

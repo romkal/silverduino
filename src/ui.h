@@ -16,7 +16,7 @@
 
 #define A_PIN 2
 #define B_PIN 3
-#define ENTER_PIN 4
+#define ENTER_PIN A0
 
 class Screen
 {
@@ -55,12 +55,12 @@ public:
 class PatternScreen: public Screen
 {
 private:
-	const pattern_t** const patterns;
+	const pattern_t* const* patterns;
 	const size_t size;
 	PatternProgression& patternProgression;
 	int index = 0;
 public:
-	PatternScreen(const char* title, const pattern_t** const patterns, size_t size, PatternProgression& pattern):
+	PatternScreen(const char* title, const pattern_t* const* patterns, size_t size, PatternProgression& pattern):
 		Screen(title), patterns(patterns), size(size), patternProgression(pattern) {};
 	virtual void drawContent() const;
 	virtual bool onChange(int8_t change);
@@ -103,7 +103,7 @@ public:
 	Ui(Screen** screens, uint8_t screensLen): screens(screens), screensLen(screensLen) {}
 	void begin();
 	void eventLoop();
-	void handleInterrupt(int8_t change);
+	static void handleInterrupt();
 };
 
 extern Ui ui;

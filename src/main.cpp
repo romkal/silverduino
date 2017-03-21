@@ -39,9 +39,9 @@ void setup()
 	  pinMode(CCP, INPUT);
 	  pinMode(HOK, INPUT);
 
+	  Serial.begin(9600);
 	  while(!Serial);
 	  digitalWrite(DOB, LOW);
-	  Serial.begin(9600);
 	  ui.begin();
 }
 

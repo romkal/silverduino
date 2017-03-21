@@ -9,17 +9,9 @@
 #include <U8g2lib.h>
 #include "ui.h"
 
-U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0);
-
-void ui_int_a()
-{
-	ui.handleInterrupt(1);
-}
-
-void ui_int_b()
-{
-	ui.handleInterrupt(-1);
-}
+#define ROTARY_CW 0x53CA
+#define ROTARY_CCW 0x3A5C
+U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R2);
 
 void Ui::begin()
 {
@@ -27,29 +19,55 @@ void Ui::begin()
 	pinMode(ENTER_PIN, INPUT_PULLUP);
 	pinMode(B_PIN, INPUT_PULLUP);
 
-	attachInterrupt(digitalPinToInterrupt(A_PIN), ui_int_a, CHANGE);
-	attachInterrupt(digitalPinToInterrupt(A_PIN), ui_int_b, CHANGE);
+	attachInterrupt(digitalPinToInterrupt(A_PIN), Ui::handleInterrupt, CHANGE);
+	attachInterrupt(digitalPinToInterrupt(B_PIN), Ui::handleInterrupt, CHANGE);
 	// u8g2_SetI2CAddress(u8g2.getU8g2(), 0x3c * 2);
 	u8g2.begin();
 }
 
-void Ui::handleInterrupt(int8_t change)
+void Ui::handleInterrupt()
 {
+	static uint8_t state = 0;
+	static int8_t localChange = 0;
 
+	uint8_t current = (PIND >> 2) & 0x03;
+	state = ((state << 2) | current) & 0x0F;
+
+	bool cw = ROTARY_CW & (1 << state);
+	bool ccw = ROTARY_CCW & (1 << state);
+
+	if (cw && ccw) {
+		localChange = 0;
+	}
+	if (cw == ccw) {
+		return;
+	}
+	if (cw) {
+		localChange++;
+	}
+	if (ccw) {
+		localChange--;
+	}
+	ui.change += localChange / 4;
+	localChange %= 4;
 }
 
 void Ui::eventLoop()
 {
+	bool done = false;
 	if (change != 0) {
+		done = true;
 		if (inMenu) {
 			inMenu = screens[screenIdx]->onChange(change);
 		} else {
 			screenIdx = (screenIdx + change + screensLen) % screensLen;
 		}
 	}
+	change = 0;
 
 	bool enterPressed = (digitalRead(ENTER_PIN) == LOW);
 	if (enterPressed && !previousPressed) {
+		done = true;
 		if (inMenu) {
 			inMenu = screens[screenIdx]->clicked();
 		} else {
@@ -59,6 +77,8 @@ void Ui::eventLoop()
 	}
 	previousPressed = enterPressed;
 
+	if (!done) return;
+	done = false;
 	u8g2.firstPage();
 	do {
 		screens[screenIdx]->draw(inMenu);
@@ -70,7 +90,7 @@ void Screen::draw(bool inMenu) const
 	u8g2.setFont(u8g2_font_10x20_mr);
 	u8g2_uint_t width = u8g2.getStrWidth(title);
 	u8g2.drawStr((SCREEN_WIDTH - width) / 2, 20, title);
-	this->drawContent();
+	 this->drawContent();
 }
 
 void NumberScreen::drawContent() const
@@ -105,7 +125,7 @@ bool BoolScreen::onChange(int8_t change)
 
 void PatternScreen::drawContent() const
 {
-	patternProgression.currentPattern().draw(u8g2);
+	patternProgression.currentPattern()->draw(u8g2);
 }
 
 bool PatternScreen::onChange(int8_t change)
