@@ -32,15 +32,23 @@ public:
 	virtual void leave() {};
 };
 
+template <typename T>
 class NumberScreen:public Screen
 {
 private:
-	uint8_t& holder;
+	T& holder;
+	void (PatternProgression::*setter)(T);
+	T currentValue;
 public:
-	NumberScreen(const char * title, uint8_t& holder): Screen(title), holder(holder) {};
+	NumberScreen(const char * title, T& holder, void (PatternProgression::*setter)(T val) = NULL): Screen(title), holder(holder), setter(setter) {};
 	virtual void drawContent() const;
 	virtual bool onChange(int8_t change);
+	virtual void leave();
+	virtual bool enter() {currentValue = holder; return true;}
 };
+
+template class NumberScreen<uint8_t>;
+template class NumberScreen<uint16_t>;
 
 class BoolScreen: public Screen
 {

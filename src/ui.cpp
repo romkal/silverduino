@@ -9,8 +9,8 @@
 #include <U8g2lib.h>
 #include "ui.h"
 
-#define ROTARY_CW 0x53CA
-#define ROTARY_CCW 0x3A5C
+#define ROTARY_CW 0x3A5C
+#define ROTARY_CCW 0x53CA
 U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R2);
 
 void Ui::begin()
@@ -38,15 +38,13 @@ void Ui::handleInterrupt()
 
 	if (cw && ccw) {
 		localChange = 0;
-	}
-	if (cw == ccw) {
 		return;
-	}
-	if (cw) {
+	} else if (cw) {
 		localChange++;
-	}
-	if (ccw) {
+	} else if (ccw) {
 		localChange--;
+	} else {
+		return;
 	}
 	ui.change += localChange / 4;
 	localChange %= 4;
@@ -93,19 +91,31 @@ void Screen::draw(bool inMenu) const
 	 this->drawContent();
 }
 
-void NumberScreen::drawContent() const
+template<typename T>
+void NumberScreen<T>::drawContent() const
 {
 	u8g2.setFont(u8g2_font_inb24_mn);
 	char number[4];
-	itoa(holder, number, 10);
+	itoa(currentValue, number, 10);
 	u8g2_uint_t width = u8g2.getStrWidth(number);
 	u8g2.drawStr((SCREEN_WIDTH - width) / 2, (64 - 20) / 2 + 20 + 24 / 2, number);
 }
 
-bool NumberScreen::onChange(int8_t change)
+template<typename T>
+bool NumberScreen<T>::onChange(int8_t change)
 {
-	holder += change;
+	currentValue += change;
 	return true;
+}
+
+template<typename T>
+void NumberScreen<T>::leave()
+{
+	if (!setter) {
+		holder = currentValue;
+	} else {
+		(patternProgression.*setter)(currentValue);
+	}
 }
 
 void BoolScreen::drawContent() const

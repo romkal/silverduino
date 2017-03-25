@@ -17,12 +17,14 @@ PatternProgression patternProgression;
 Ayab ayab;
 
 PatternScreen patternScreen("Pattern", PATTERNS, 2, patternProgression);
-NumberScreen repeatScreen("Repeat", patternProgression.repeat);
+NumberScreen<uint8_t> repeatScreen("Repeat", patternProgression.repeat);
+NumberScreen<uint16_t> rowNrScreen("Row number", patternProgression.row, &PatternProgression::setRowNr);
 BoolScreen invertScreen("Invert", patternProgression.invert);
 BoolScreen mirrorScreen("Mirror", patternProgression.mirror);
 CarriageFunctionScreen resetScreen ("Reset", &PatternProgression::reset);
 Screen* screens[] {
 		&patternScreen,
+		&rowNrScreen,
 		&repeatScreen,
 		&invertScreen,
 		&mirrorScreen,

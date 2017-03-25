@@ -68,22 +68,23 @@ public:
 class PatternProgression
 {
 private:
-	uint16_t row = 0;
 	row_t current_row;
 	const Pattern* pattern;
 	void loadRow();
 public:
+	uint16_t row = 0;
+	void setRowNr(uint16_t row) {this->row = row; loadRow();}
 	PatternProgression();
 	uint8_t scale_x = 1;
 	uint8_t scale_y = 1;
 	bool invert = false;
 	bool mirror = false;
 	uint8_t repeat = 1;
-	void setPattern(Pattern* p) {delete pattern; pattern = p; row = 0; loadRow();}
+	void setPattern(Pattern* p) {delete pattern; pattern = p; setRowNr(0);}
 	const Pattern* currentPattern() const {return pattern;}
 	bool endLine();
 	bool needleState(int16_t needleNr) const;
-	void reset() {row = 0; loadRow();}
+	void reset() {setRowNr(0);}
 };
 
 class Carriage
